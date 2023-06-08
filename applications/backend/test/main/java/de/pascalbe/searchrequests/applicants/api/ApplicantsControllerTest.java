@@ -7,10 +7,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ApplicantsController.class)
 class ApplicantsControllerTest {
+
+    private static final String VALID_REQUEST_BODY = "{\"email\": \"john.doe@example.com\", \"firstName\": \"John\", \"lastName\": \"Doe\"}";
 
     @Autowired
     private MockMvc mockMvc;
@@ -42,12 +45,19 @@ class ApplicantsControllerTest {
     @Test
     void shouldAllowToCreateApplicantWithoutComment() throws Exception {
         var requestBody = "{\"email\": \"john.doe@example.com\", \"firstName\": \"John\", \"lastName\": \"Doe\"}";
-        this.mockMvc.perform(post("/applicants").contentType(MediaType.APPLICATION_JSON).content(requestBody)).andExpect(status().isOk());
+        this.mockMvc.perform(post("/applicants").contentType(MediaType.APPLICATION_JSON).content(requestBody)).andExpect(status().isCreated());
     }
 
     @Test
     void shouldAllowToCreateApplicantWithComment() throws Exception {
         var requestBody = "{\"email\": \"john.doe@example.com\", \"firstName\": \"John\", \"lastName\": \"Doe\", \"comment\": \"I am a comment\"}";
-        this.mockMvc.perform(post("/applicants").contentType(MediaType.APPLICATION_JSON).content(requestBody)).andExpect(status().isOk());
+        this.mockMvc.perform(post("/applicants").contentType(MediaType.APPLICATION_JSON).content(requestBody)).andExpect(status().isCreated());
+    }
+
+    @Test
+    void shouldReturnTheCreatedApplicantsId() throws Exception {
+        this.mockMvc.perform(post("/applicants").contentType(MediaType.APPLICATION_JSON).content(VALID_REQUEST_BODY))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").isString());
     }
 }
