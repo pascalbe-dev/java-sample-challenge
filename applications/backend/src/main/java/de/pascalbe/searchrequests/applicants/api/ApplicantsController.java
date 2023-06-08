@@ -2,6 +2,7 @@ package de.pascalbe.searchrequests.applicants.api;
 
 import de.pascalbe.searchrequests.applicants.domain.Applicant;
 import de.pascalbe.searchrequests.applicants.domain.ApplicantRepository;
+import de.pascalbe.searchrequests.applicants.domain.CreationSource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,7 @@ public class ApplicantsController {
         applicant.setFirstName(manualApplicant.getFirstName());
         applicant.setLastName(manualApplicant.getLastName());
         applicant.setComment(manualApplicant.getComment());
+        applicant.setCreationSource(CreationSource.MANUAL);
         applicantRepository.save(applicant);
 
         var response = new StoreApplicantResponse();
@@ -35,14 +37,11 @@ public class ApplicantsController {
     }
 
     @GetMapping("/applicants/{id}")
-    public ResponseEntity<?> getApplicantById(@PathVariable String id) {
+    public ResponseEntity<Applicant> getApplicantById(@PathVariable String id) {
         var applicant = applicantRepository.findById(id);
 
-        if (applicant.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+        return applicant.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
 
-        return ResponseEntity.ok(applicant.get());
     }
 
 }

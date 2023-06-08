@@ -19,4 +19,6 @@ public class Applicant {
     private String lastName;
 
     private String comment;
+
+    private CreationSource creationSource;
 }

@@ -1,6 +1,7 @@
 package de.pascalbe.searchrequests.applicants;
 
 import com.jayway.jsonpath.JsonPath;
+import de.pascalbe.searchrequests.applicants.domain.CreationSource;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -18,16 +19,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 public class ManualApplicantCreationIT {
+    private static final String VALID_REQUEST_BODY = "{\"email\": \"john.doe@example.com\", \"firstName\": \"John\", \"lastName\": \"Doe\", \"comment\": \"I am a comment\"}";
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
     void shouldBeAbleToStoreAndFetchDataAboutManualApplicants() throws Exception {
-        var requestBody = "{\"email\": \"john.doe@example.com\", \"firstName\": \"John\", \"lastName\": \"Doe\", \"comment\": \"I am a comment\"}";
         var requestResult = mockMvc.perform(post("/applicants")
                         .contentType("application/json")
-                        .content(requestBody))
+                        .content(VALID_REQUEST_BODY))
                 .andExpect(status().isCreated())
                 .andReturn();
 
@@ -40,5 +41,21 @@ public class ManualApplicantCreationIT {
                 .andExpect(jsonPath("$.firstName").value("John"))
                 .andExpect(jsonPath("$.lastName").value("Doe"))
                 .andExpect(jsonPath("$.comment").value("I am a comment"));
+    }
+
+    @Test
+    void shouldMarkApplicantsAsManualApplicants() throws Exception {
+        var requestResult = mockMvc.perform(post("/applicants")
+                        .contentType("application/json")
+                        .content(VALID_REQUEST_BODY))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        var applicantId = JsonPath.read(requestResult.getResponse().getContentAsString(), "$.id");
+        assertThat((String) applicantId).isNotBlank();
+
+        mockMvc.perform(get("/applicants/" + applicantId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.creationSource").value(CreationSource.MANUAL.toString()));
     }
 }
