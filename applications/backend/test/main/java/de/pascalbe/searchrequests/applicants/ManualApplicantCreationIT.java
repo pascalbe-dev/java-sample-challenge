@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 public class ManualApplicantCreationIT {
-    private static final String VALID_REQUEST_BODY = "{\"email\": \"john.doe@example.com\", \"firstName\": \"John\", \"lastName\": \"Doe\", \"comment\": \"I am a comment\"}";
+    private static final String VALID_REQUEST_BODY = "{\"email\": \"john.doe@example.com\", \"firstName\": \"John\", \"lastName\": \"Doe\", \"comment\": \"I am a comment\", \"salutation\": \"MRS\"}";
 
     @Autowired
     private MockMvc mockMvc;
@@ -40,7 +40,8 @@ public class ManualApplicantCreationIT {
                 .andExpect(jsonPath("$.email").value("john.doe@example.com"))
                 .andExpect(jsonPath("$.firstName").value("John"))
                 .andExpect(jsonPath("$.lastName").value("Doe"))
-                .andExpect(jsonPath("$.comment").value("I am a comment"));
+                .andExpect(jsonPath("$.comment").value("I am a comment"))
+                .andExpect(jsonPath("$.salutation").value("MRS"));
     }
 
     @Test

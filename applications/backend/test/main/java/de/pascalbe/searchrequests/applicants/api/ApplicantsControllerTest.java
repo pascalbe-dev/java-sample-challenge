@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ApplicantsController.class)
 class ApplicantsControllerTest {
 
-    private static final String VALID_REQUEST_BODY = "{\"email\": \"john.doe@example.com\", \"firstName\": \"John\", \"lastName\": \"Doe\"}";
+    private static final String VALID_REQUEST_BODY = "{\"email\": \"john.doe@example.com\", \"firstName\": \"John\", \"lastName\": \"Doe\", \"comment\": \"This is a comment\", \"salutation\": \"MR\"}";
 
     @Autowired
     private MockMvc mockMvc;
@@ -48,15 +48,26 @@ class ApplicantsControllerTest {
     }
 
     @Test
+    void shouldFailToCreateApplicantWithInvalidSalutation() throws Exception {
+        var requestBody = "{\"email\": \"john.doe@example.com\", \"firstName\": \"John\", \"lastName\": \"Doe\", \"salutation\": \"MX\"}";
+        this.mockMvc.perform(post("/applicants").contentType(MediaType.APPLICATION_JSON).content(requestBody)).andExpect(status().isBadRequest());
+    }
+
+    @Test
     void shouldAllowToCreateApplicantWithoutComment() throws Exception {
-        var requestBody = "{\"email\": \"john.doe@example.com\", \"firstName\": \"John\", \"lastName\": \"Doe\"}";
+        var requestBody = "{\"email\": \"john.doe@example.com\", \"firstName\": \"John\", \"lastName\": \"Doe\", \"salutation\": \"MRS\"}";
         this.mockMvc.perform(post("/applicants").contentType(MediaType.APPLICATION_JSON).content(requestBody)).andExpect(status().isCreated());
     }
 
     @Test
-    void shouldAllowToCreateApplicantWithComment() throws Exception {
-        var requestBody = "{\"email\": \"john.doe@example.com\", \"firstName\": \"John\", \"lastName\": \"Doe\", \"comment\": \"I am a comment\"}";
+    void shouldAllowToCreateApplicantWithoutSalutation() throws Exception {
+        var requestBody = "{\"email\": \"john.doe@example.com\", \"firstName\": \"John\", \"lastName\": \"Doe\", \"comment\": \"Sample comment\"}";
         this.mockMvc.perform(post("/applicants").contentType(MediaType.APPLICATION_JSON).content(requestBody)).andExpect(status().isCreated());
+    }
+
+    @Test
+    void shouldAllowToCreateApplicantWithAllData() throws Exception {
+        this.mockMvc.perform(post("/applicants").contentType(MediaType.APPLICATION_JSON).content(VALID_REQUEST_BODY)).andExpect(status().isCreated());
     }
 
     @Test

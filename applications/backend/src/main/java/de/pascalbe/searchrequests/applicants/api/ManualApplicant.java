@@ -1,5 +1,6 @@
 package de.pascalbe.searchrequests.applicants.api;
 
+import de.pascalbe.searchrequests.applicants.domain.Salutation;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -20,5 +21,7 @@ public class ManualApplicant {
     private String lastName;
 
     private String comment;
+
+    private Salutation salutation;
 
 }

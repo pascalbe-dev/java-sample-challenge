@@ -28,6 +28,7 @@ public class ApplicantsController {
         applicant.setFirstName(manualApplicant.getFirstName());
         applicant.setLastName(manualApplicant.getLastName());
         applicant.setComment(manualApplicant.getComment());
+        applicant.setSalutation(manualApplicant.getSalutation());
         applicant.setCreationSource(CreationSource.MANUAL);
         applicantRepository.save(applicant);
 

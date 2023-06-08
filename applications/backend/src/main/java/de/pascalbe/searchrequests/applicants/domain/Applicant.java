@@ -20,5 +20,7 @@ public class Applicant {
 
     private String comment;
 
+    private Salutation salutation;
+
     private CreationSource creationSource;
 }
