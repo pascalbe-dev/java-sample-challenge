@@ -1,9 +1,11 @@
 package de.pascalbe.searchrequests.applicants.domain;
 
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.time.Instant;
 
 @Entity
 @Data
@@ -23,4 +25,7 @@ public class Applicant {
     private Salutation salutation;
 
     private CreationSource creationSource;
+
+    @CreationTimestamp
+    private Instant creationTimestamp;
 }
