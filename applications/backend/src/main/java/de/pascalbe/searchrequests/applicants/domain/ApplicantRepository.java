@@ -7,4 +7,6 @@ import java.util.UUID;
 
 public interface ApplicantRepository extends JpaRepository<Applicant, String> {
     List<Applicant> findAllByPropertyId(UUID propertyId);
+
+    List<Applicant> findAllyByPropertyIdAndStatus(UUID propertyId, Status status);
 }

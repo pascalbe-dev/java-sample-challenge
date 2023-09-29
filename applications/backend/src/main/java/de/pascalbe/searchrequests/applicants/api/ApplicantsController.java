@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -52,8 +53,9 @@ public class ApplicantsController {
     }
 
     @GetMapping("/properties/{propertyId}/applicants")
-    public ResponseEntity<List<Applicant>> getApplicants(@PathVariable UUID propertyId) {
-        var applicants = applicantRepository.findAllByPropertyId(propertyId);
+    public ResponseEntity<List<Applicant>> getApplicants(@PathVariable UUID propertyId, @RequestParam Optional<Status> status) {
+        var applicants = status.map(s -> applicantRepository.findAllyByPropertyIdAndStatus(propertyId, s))
+                .orElseGet(() -> applicantRepository.findAllByPropertyId(propertyId));
 
         return ResponseEntity.ok(applicants);
     }
