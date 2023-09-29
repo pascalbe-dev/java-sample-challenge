@@ -59,4 +59,20 @@ public class ManualApplicantCreationIT {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.creationSource").value(CreationSource.MANUAL.toString()));
     }
+
+    @Test
+    void shouldStoreCreationTimestampForApplicant() throws Exception {
+        var requestResult = mockMvc.perform(post("/applicants")
+                        .contentType("application/json")
+                        .content(VALID_REQUEST_BODY))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        var applicantId = JsonPath.read(requestResult.getResponse().getContentAsString(), "$.id");
+        assertThat((String) applicantId).isNotBlank();
+
+        mockMvc.perform(get("/applicants/" + applicantId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.creationTimestamp").isNotEmpty());
+    }
 }
