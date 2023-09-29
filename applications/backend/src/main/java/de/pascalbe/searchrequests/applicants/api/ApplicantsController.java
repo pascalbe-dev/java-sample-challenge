@@ -21,8 +21,11 @@ public class ApplicantsController {
 
     @PostMapping("/applicants")
     public ResponseEntity<?> storeManualApplicant(@Valid @RequestBody ManualApplicant manualApplicant) {
-        //  TO NOTE: we could put this logic in the application layer, but since there is no real application logic, we'll leave it here for simplicity reasons
+        //  TO NOTE: we could put this logic in the application layer, but since there is no real application logic,
+        //      we'll leave it here for simplicity reasons.
         var applicant = new Applicant();
+        //  TO NOTE: this mapping could be extracted into a mapper (e.g. with mapstruct).
+        //      It's left for simplicity reasons. Both options would be fine in my opinion in a real app.
         applicant.setId(String.valueOf(UUID.randomUUID()));
         applicant.setEmail(manualApplicant.getEmail());
         applicant.setFirstName(manualApplicant.getFirstName());
