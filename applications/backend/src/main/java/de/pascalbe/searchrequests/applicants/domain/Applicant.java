@@ -35,4 +35,15 @@ public class Applicant {
     private Instant creationTimestamp;
 
     private Status status;
+
+    private boolean wbsPresent;
+
+    private boolean pets;
+
+    private int numberOfPersons;
+
+    //  TODO: determine which type makes sense and adjust it
+    private String earliestMoveInDate;
+
+    private String applicantComment;
 }

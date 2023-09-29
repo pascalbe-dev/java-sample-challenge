@@ -56,11 +56,15 @@ public class ApplicantsController {
         applicant.setEmail(automatedApplicant.getEmail());
         applicant.setFirstName(automatedApplicant.getFirstName());
         applicant.setLastName(automatedApplicant.getLastName());
-        applicant.setUserComment(automatedApplicant.getApplicantComment());
+        applicant.setApplicantComment(automatedApplicant.getApplicantComment());
         applicant.setSalutation(automatedApplicant.getSalutation());
         applicant.setCreationSource(CreationSource.PORTAL);
         applicant.setPropertyId(propertyId);
         applicant.setStatus(Status.CREATED);
+        applicant.setWbsPresent(automatedApplicant.isWbsPresent());
+        applicant.setPets(automatedApplicant.isPets());
+        applicant.setNumberOfPersons(automatedApplicant.getNumberOfPersons());
+        applicant.setEarliestMoveInDate(automatedApplicant.getEarliestMoveInDate());
         applicantRepository.save(applicant);
 
         var response = new StoreApplicantResponse();
@@ -84,5 +88,4 @@ public class ApplicantsController {
 
         return ResponseEntity.ok(applicants);
     }
-
 }
