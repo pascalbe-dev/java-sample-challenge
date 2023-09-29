@@ -39,10 +39,10 @@ public class ApplicantRetrievalIT {
     @Test
     void shouldBeAbleToRetrieveAllApplicantsForOneProperty() throws Exception {
         var propertyId = UUID.randomUUID();
-        var rick = this.givenApplicantIsCreated("Rick", propertyId, SAMPLE_EMAIL_ADDRESS);
-        var morty = this.givenApplicantIsCreated("Morty", propertyId, SAMPLE_EMAIL_ADDRESS);
-        this.givenApplicantIsCreated("Summer", propertyId, SAMPLE_EMAIL_ADDRESS);
-        this.givenApplicantIsCreated("Greg", UUID.randomUUID(), SAMPLE_EMAIL_ADDRESS);
+        var rick = this.givenManualApplicantIsCreated("Rick", propertyId, SAMPLE_EMAIL_ADDRESS);
+        var morty = this.givenManualApplicantIsCreated("Morty", propertyId, SAMPLE_EMAIL_ADDRESS);
+        this.givenManualApplicantIsCreated("Summer", propertyId, SAMPLE_EMAIL_ADDRESS);
+        this.givenManualApplicantIsCreated("Greg", UUID.randomUUID(), SAMPLE_EMAIL_ADDRESS);
 
         givenApplicantHasStatus(rick, Status.INVITED);
         givenApplicantHasStatus(morty, Status.DECLINED);
@@ -59,10 +59,10 @@ public class ApplicantRetrievalIT {
     @Test
     void shouldBeAbleToRetrieveOnlyInvitedApplicants() throws Exception {
         var propertyId = UUID.randomUUID();
-        this.givenApplicantIsCreated("Chiara", propertyId, SAMPLE_EMAIL_ADDRESS);
-        var thorsten = this.givenApplicantIsCreated("Thorsten", propertyId, SAMPLE_EMAIL_ADDRESS);
-        var andi = this.givenApplicantIsCreated("Andi", propertyId, SAMPLE_EMAIL_ADDRESS);
-        var lisa = this.givenApplicantIsCreated("Lisa", propertyId, SAMPLE_EMAIL_ADDRESS);
+        this.givenManualApplicantIsCreated("Chiara", propertyId, SAMPLE_EMAIL_ADDRESS);
+        var thorsten = this.givenManualApplicantIsCreated("Thorsten", propertyId, SAMPLE_EMAIL_ADDRESS);
+        var andi = this.givenManualApplicantIsCreated("Andi", propertyId, SAMPLE_EMAIL_ADDRESS);
+        var lisa = this.givenManualApplicantIsCreated("Lisa", propertyId, SAMPLE_EMAIL_ADDRESS);
 
         givenApplicantHasStatus(thorsten, Status.INVITED);
         givenApplicantHasStatus(lisa, Status.INVITED);
@@ -78,10 +78,10 @@ public class ApplicantRetrievalIT {
     @Test
     void shouldBeAbleToRetrieveOnlyDeclinedApplicants() throws Exception {
         var propertyId = UUID.randomUUID();
-        this.givenApplicantIsCreated("Chiara", propertyId, SAMPLE_EMAIL_ADDRESS);
-        this.givenApplicantIsCreated("Thorsten", propertyId, SAMPLE_EMAIL_ADDRESS);
-        var andi = this.givenApplicantIsCreated("Andi", propertyId, SAMPLE_EMAIL_ADDRESS);
-        var lisa = this.givenApplicantIsCreated("Lisa", propertyId, SAMPLE_EMAIL_ADDRESS);
+        this.givenManualApplicantIsCreated("Chiara", propertyId, SAMPLE_EMAIL_ADDRESS);
+        this.givenManualApplicantIsCreated("Thorsten", propertyId, SAMPLE_EMAIL_ADDRESS);
+        var andi = this.givenManualApplicantIsCreated("Andi", propertyId, SAMPLE_EMAIL_ADDRESS);
+        var lisa = this.givenManualApplicantIsCreated("Lisa", propertyId, SAMPLE_EMAIL_ADDRESS);
 
         givenApplicantHasStatus(lisa, Status.INVITED);
         givenApplicantHasStatus(andi, Status.DECLINED);
@@ -95,10 +95,10 @@ public class ApplicantRetrievalIT {
     @Test
     void shouldBeAbleToRetrieveApplicantsBasedOnPartsOfTheirEmail() throws Exception {
         var propertyId = UUID.randomUUID();
-        var christina = this.givenApplicantIsCreated("Christina", propertyId, "christina@gmail.com");
-        this.givenApplicantIsCreated("Thorsten", propertyId, SAMPLE_EMAIL_ADDRESS);
-        this.givenApplicantIsCreated("Andi", propertyId, SAMPLE_EMAIL_ADDRESS);
-        this.givenApplicantIsCreated("Chris", propertyId, "chris@gmail.com");
+        var christina = this.givenManualApplicantIsCreated("Christina", propertyId, "christina@gmail.com");
+        this.givenManualApplicantIsCreated("Thorsten", propertyId, SAMPLE_EMAIL_ADDRESS);
+        this.givenManualApplicantIsCreated("Andi", propertyId, SAMPLE_EMAIL_ADDRESS);
+        this.givenManualApplicantIsCreated("Chris", propertyId, "chris@gmail.com");
 
         givenApplicantHasStatus(christina, Status.INVITED);
 
@@ -109,7 +109,25 @@ public class ApplicantRetrievalIT {
                 .andExpect(jsonPath("$[1].firstName").value("Chris"));
     }
 
-    private String givenApplicantIsCreated(String name, UUID propertyId, String email) throws Exception {
+    @Test
+    void shouldBeAbleToRetrieveOnlyApplicantsWithASpecificNumberOfPersons() throws Exception {
+        var propertyId = UUID.randomUUID();
+        var christina = this.givenManualApplicantIsCreated("Christina", propertyId, SAMPLE_EMAIL_ADDRESS);
+        var thorsten = this.givenManualApplicantIsCreated("Thorsten", propertyId, SAMPLE_EMAIL_ADDRESS);
+        var teja = this.givenManualApplicantIsCreated("Teja", propertyId, SAMPLE_EMAIL_ADDRESS);
+
+        givenApplicantSearchesForThisAmountOfPersons(christina, 2);
+        givenApplicantSearchesForThisAmountOfPersons(thorsten, 3);
+        givenApplicantSearchesForThisAmountOfPersons(teja, 2);
+
+        mockMvc.perform(get(getApplicantsEndpoint(propertyId)).queryParam("numberOfPersons", "2"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].firstName").value("Christina"))
+                .andExpect(jsonPath("$[1].firstName").value("Teja"));
+    }
+
+    private String givenManualApplicantIsCreated(String name, UUID propertyId, String email) throws Exception {
         var body = VALID_REQUEST_BODY.replace("John", name).replace("john.doe@example.com", email);
         var response = mockMvc.perform(post(getApplicantsEndpoint(propertyId))
                         .contentType("application/json")
@@ -124,6 +142,12 @@ public class ApplicantRetrievalIT {
     private void givenApplicantHasStatus(String applicantId, Status status) {
         var applicant = repository.findById(applicantId).orElseThrow();
         applicant.setStatus(status);
+        repository.save(applicant);
+    }
+
+    private void givenApplicantSearchesForThisAmountOfPersons(String applicantId, int numberOfPersons) {
+        var applicant = repository.findById(applicantId).orElseThrow();
+        applicant.setNumberOfPersons(numberOfPersons);
         repository.save(applicant);
     }
 

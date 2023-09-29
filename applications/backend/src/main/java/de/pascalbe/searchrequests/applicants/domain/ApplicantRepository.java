@@ -11,8 +11,11 @@ public interface ApplicantRepository extends JpaRepository<Applicant, String> {
     @Query("SELECT a FROM Applicant a " +
             "WHERE a.propertyId = :propertyId " +
             "AND (:status IS NULL OR a.status = :status) " +
+            "AND (:numberOfPersons IS NULL OR a.numberOfPersons = :numberOfPersons) " +
             "AND (:email IS NULL OR a.email LIKE %:email%)")
-    List<Applicant> findAllByPropertyIdAndStatusAndEmailContaining(@Param("propertyId") UUID propertyId,
-                                                                   @Param("status") Status status,
-                                                                   @Param("email") String email);
+    List<Applicant> findAllByAttributes(
+            @Param("propertyId") UUID propertyId,
+            @Param("status") Status status,
+            @Param("numberOfPersons") Integer numberOfPersons,
+            @Param("email") String email);
 }
