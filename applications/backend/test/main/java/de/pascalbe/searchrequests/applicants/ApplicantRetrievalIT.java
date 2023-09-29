@@ -16,6 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 public class ApplicantRetrievalIT {
+    private static final String CREATE_APPLICANT_ENDPOINT = "/properties/6c54590a-04d4-46e6-b383-d1bc8be8e530/applicants";
     private static final String VALID_REQUEST_BODY = "{\"email\": \"john.doe@example.com\", \"firstName\": \"John\", \"lastName\": \"Doe\", \"comment\": \"I am a comment\", \"salutation\": \"MRS\"}";
 
     @Autowired
@@ -38,7 +39,7 @@ public class ApplicantRetrievalIT {
 
     private void saveApplicant(String name) throws Exception {
         var body = VALID_REQUEST_BODY.replace("John", name);
-        mockMvc.perform(post("/applicants")
+        mockMvc.perform(post(CREATE_APPLICANT_ENDPOINT)
                         .contentType("application/json")
                         .content(body))
                 .andExpect(status().isCreated());

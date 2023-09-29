@@ -20,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 public class ManualApplicantCreationIT {
+    private static final String CREATE_APPLICANT_ENDPOINT = "/properties/6c54590a-04d4-46e6-b383-d1bc8be8e530/applicants";
     private static final String VALID_REQUEST_BODY = "{\"email\": \"john.doe@example.com\", \"firstName\": \"John\", \"lastName\": \"Doe\", \"comment\": \"I am a comment\", \"salutation\": \"MRS\"}";
 
     @Autowired
@@ -27,7 +28,7 @@ public class ManualApplicantCreationIT {
 
     @Test
     void shouldBeAbleToStoreAndFetchDataAboutManualApplicants() throws Exception {
-        var requestResult = mockMvc.perform(post("/applicants")
+        var requestResult = mockMvc.perform(post(CREATE_APPLICANT_ENDPOINT)
                         .contentType("application/json")
                         .content(VALID_REQUEST_BODY))
                 .andExpect(status().isCreated())
@@ -47,7 +48,7 @@ public class ManualApplicantCreationIT {
 
     @Test
     void shouldMarkApplicantsAsManualApplicants() throws Exception {
-        var requestResult = mockMvc.perform(post("/applicants")
+        var requestResult = mockMvc.perform(post(CREATE_APPLICANT_ENDPOINT)
                         .contentType("application/json")
                         .content(VALID_REQUEST_BODY))
                 .andExpect(status().isCreated())
@@ -63,7 +64,7 @@ public class ManualApplicantCreationIT {
 
     @Test
     void shouldStoreCreationTimestampForApplicant() throws Exception {
-        var requestResult = mockMvc.perform(post("/applicants")
+        var requestResult = mockMvc.perform(post(CREATE_APPLICANT_ENDPOINT)
                         .contentType("application/json")
                         .content(VALID_REQUEST_BODY))
                 .andExpect(status().isCreated())

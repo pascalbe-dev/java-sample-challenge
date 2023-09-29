@@ -20,8 +20,8 @@ public class ApplicantsController {
 
     private final ApplicantRepository applicantRepository;
 
-    @PostMapping("/applicants")
-    public ResponseEntity<?> storeManualApplicant(@Valid @RequestBody ManualApplicant manualApplicant) {
+    @PostMapping("/properties/{propertyId}/applicants")
+    public ResponseEntity<?> storeManualApplicant(@PathVariable UUID propertyId, @Valid @RequestBody ManualApplicant manualApplicant) {
         //  TO NOTE: we could put this logic in the application layer, but since there is no real application logic,
         //      we'll leave it here for simplicity reasons.
         var applicant = new Applicant();
@@ -34,6 +34,7 @@ public class ApplicantsController {
         applicant.setComment(manualApplicant.getComment());
         applicant.setSalutation(manualApplicant.getSalutation());
         applicant.setCreationSource(CreationSource.MANUAL);
+        applicant.setPropertyId(propertyId);
         applicantRepository.save(applicant);
 
         var response = new StoreApplicantResponse();
