@@ -16,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 public class ApplicantRetrievalIT {
-    private static final String CREATE_APPLICANT_ENDPOINT = "/properties/6c54590a-04d4-46e6-b383-d1bc8be8e530/applicants";
+    private static final String APPLICANTS_ENDPOINT = "/properties/6c54590a-04d4-46e6-b383-d1bc8be8e530/applicants";
     private static final String VALID_REQUEST_BODY = "{\"email\": \"john.doe@example.com\", \"firstName\": \"John\", \"lastName\": \"Doe\", \"comment\": \"I am a comment\", \"salutation\": \"MRS\"}";
 
     @Autowired
@@ -29,7 +29,7 @@ public class ApplicantRetrievalIT {
         this.saveApplicant("Summer");
 
 
-        mockMvc.perform(get("/applicants"))
+        mockMvc.perform(get(APPLICANTS_ENDPOINT))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(3))
                 .andExpect(jsonPath("$[0].firstName").value("Rick"))
@@ -39,7 +39,7 @@ public class ApplicantRetrievalIT {
 
     private void saveApplicant(String name) throws Exception {
         var body = VALID_REQUEST_BODY.replace("John", name);
-        mockMvc.perform(post(CREATE_APPLICANT_ENDPOINT)
+        mockMvc.perform(post(APPLICANTS_ENDPOINT)
                         .contentType("application/json")
                         .content(body))
                 .andExpect(status().isCreated());

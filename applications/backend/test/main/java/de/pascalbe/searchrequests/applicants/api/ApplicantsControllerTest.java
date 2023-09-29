@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -82,5 +83,11 @@ class ApplicantsControllerTest {
         this.mockMvc.perform(post(CREATE_APPLICANT_ENDPOINT).contentType(MediaType.APPLICATION_JSON).content(VALID_REQUEST_BODY))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").isString());
+    }
+
+    @Test
+    void shouldFailToGettingApplicantsForAnInvalidPropertyId() throws Exception {
+        var endpoint = "/properties/not-a-uuid/applicants";
+        this.mockMvc.perform(get(endpoint).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
     }
 }

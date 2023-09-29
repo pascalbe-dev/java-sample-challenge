@@ -49,9 +49,9 @@ public class ApplicantsController {
         return applicant.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/applicants")
-    public ResponseEntity<List<Applicant>> getApplicants() {
-        var applicants = applicantRepository.findAll();
+    @GetMapping("/properties/{propertyId}/applicants")
+    public ResponseEntity<List<Applicant>> getApplicants(@PathVariable UUID propertyId) {
+        var applicants = applicantRepository.findAllByPropertyId(propertyId);
 
         return ResponseEntity.ok(applicants);
     }
