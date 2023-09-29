@@ -65,6 +65,23 @@ public class ApplicantRetrievalIT {
                 .andExpect(jsonPath("$[1].firstName").value("Lisa"));
     }
 
+    @Test
+    void shouldBeAbleToRetrieveOnlyDeclinedApplicants() throws Exception {
+        var propertyId = UUID.randomUUID();
+        this.givenApplicantIsCreated("Chiara", propertyId);
+        this.givenApplicantIsCreated("Thorsten", propertyId);
+        var andi = this.givenApplicantIsCreated("Andi", propertyId);
+        var lisa = this.givenApplicantIsCreated("Lisa", propertyId);
+
+        givenApplicantHasStatus(lisa, Status.INVITED);
+        givenApplicantHasStatus(andi, Status.DECLINED);
+
+        mockMvc.perform(get(getApplicantsEndpoint(propertyId)).queryParam("status", "DECLINED"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].firstName").value("Andi"));
+    }
+
     private String givenApplicantIsCreated(String name, UUID propertyId) throws Exception {
         var body = VALID_REQUEST_BODY.replace("John", name);
         var response = mockMvc.perform(post(getApplicantsEndpoint(propertyId))
