@@ -1,12 +1,18 @@
 package de.pascalbe.searchrequests.applicants.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface ApplicantRepository extends JpaRepository<Applicant, String> {
-    List<Applicant> findAllByPropertyId(UUID propertyId);
-
-    List<Applicant> findAllyByPropertyIdAndStatus(UUID propertyId, Status status);
+    @Query("SELECT a FROM Applicant a " +
+            "WHERE a.propertyId = :propertyId " +
+            "AND (:status IS NULL OR a.status = :status) " +
+            "AND (:email IS NULL OR a.email LIKE %:email%)")
+    List<Applicant> findAllByPropertyIdAndStatusAndEmailContaining(@Param("propertyId") UUID propertyId,
+                                                                   @Param("status") Status status,
+                                                                   @Param("email") String email);
 }

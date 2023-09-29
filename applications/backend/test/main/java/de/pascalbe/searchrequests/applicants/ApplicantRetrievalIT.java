@@ -96,7 +96,7 @@ public class ApplicantRetrievalIT {
 
         givenApplicantHasStatus(christina, Status.INVITED);
 
-        mockMvc.perform(get(getApplicantsEndpoint(propertyId)).queryParam("email", "chris"))
+        mockMvc.perform(get(getApplicantsEndpoint(propertyId)).queryParam("partOfEmail", "chris"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].firstName").value("Christina"))

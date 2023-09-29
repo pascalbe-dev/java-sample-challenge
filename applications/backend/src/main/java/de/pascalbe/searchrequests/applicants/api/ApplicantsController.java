@@ -53,9 +53,11 @@ public class ApplicantsController {
     }
 
     @GetMapping("/properties/{propertyId}/applicants")
-    public ResponseEntity<List<Applicant>> getApplicants(@PathVariable UUID propertyId, @RequestParam Optional<Status> status) {
-        var applicants = status.map(s -> applicantRepository.findAllyByPropertyIdAndStatus(propertyId, s))
-                .orElseGet(() -> applicantRepository.findAllByPropertyId(propertyId));
+    public ResponseEntity<List<Applicant>> getApplicants(@PathVariable UUID propertyId,
+                                                         @RequestParam Optional<Status> status,
+                                                         @RequestParam Optional<String> partOfEmail) {
+        var applicants = applicantRepository.findAllByPropertyIdAndStatusAndEmailContaining(propertyId,
+                status.orElse(null), partOfEmail.orElse(null));
 
         return ResponseEntity.ok(applicants);
     }
