@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -45,7 +46,13 @@ public class ApplicantsController {
         var applicant = applicantRepository.findById(id);
 
         return applicant.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
+    @GetMapping("/applicants")
+    public ResponseEntity<List<Applicant>> getApplicants() {
+        var applicants = applicantRepository.findAll();
+
+        return ResponseEntity.ok(applicants);
     }
 
 }
