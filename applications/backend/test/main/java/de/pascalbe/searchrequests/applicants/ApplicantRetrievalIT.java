@@ -21,6 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 public class ApplicantRetrievalIT {
+    private static final String SAMPLE_EMAIL_ADDRESS = "john.doe@example.com";
     private static final String VALID_REQUEST_BODY = "{\"email\": \"john.doe@example.com\", \"firstName\": \"John\", \"lastName\": \"Doe\", \"comment\": \"I am a comment\", \"salutation\": \"MRS\"}";
 
     @Autowired
@@ -32,10 +33,10 @@ public class ApplicantRetrievalIT {
     @Test
     void shouldBeAbleToRetrieveAllApplicantsForOneProperty() throws Exception {
         var propertyId = UUID.randomUUID();
-        this.givenApplicantIsCreated("Rick", propertyId);
-        this.givenApplicantIsCreated("Morty", propertyId);
-        this.givenApplicantIsCreated("Summer", propertyId);
-        this.givenApplicantIsCreated("Greg", UUID.randomUUID());
+        this.givenApplicantIsCreated("Rick", propertyId, SAMPLE_EMAIL_ADDRESS);
+        this.givenApplicantIsCreated("Morty", propertyId, SAMPLE_EMAIL_ADDRESS);
+        this.givenApplicantIsCreated("Summer", propertyId, SAMPLE_EMAIL_ADDRESS);
+        this.givenApplicantIsCreated("Greg", UUID.randomUUID(), SAMPLE_EMAIL_ADDRESS);
 
 
         mockMvc.perform(get(getApplicantsEndpoint(propertyId)))
@@ -49,10 +50,10 @@ public class ApplicantRetrievalIT {
     @Test
     void shouldBeAbleToRetrieveOnlyInvitedApplicants() throws Exception {
         var propertyId = UUID.randomUUID();
-        this.givenApplicantIsCreated("Chiara", propertyId);
-        var thorsten = this.givenApplicantIsCreated("Thorsten", propertyId);
-        var andi = this.givenApplicantIsCreated("Andi", propertyId);
-        var lisa = this.givenApplicantIsCreated("Lisa", propertyId);
+        this.givenApplicantIsCreated("Chiara", propertyId, SAMPLE_EMAIL_ADDRESS);
+        var thorsten = this.givenApplicantIsCreated("Thorsten", propertyId, SAMPLE_EMAIL_ADDRESS);
+        var andi = this.givenApplicantIsCreated("Andi", propertyId, SAMPLE_EMAIL_ADDRESS);
+        var lisa = this.givenApplicantIsCreated("Lisa", propertyId, SAMPLE_EMAIL_ADDRESS);
 
         givenApplicantHasStatus(thorsten, Status.INVITED);
         givenApplicantHasStatus(lisa, Status.INVITED);
@@ -68,10 +69,10 @@ public class ApplicantRetrievalIT {
     @Test
     void shouldBeAbleToRetrieveOnlyDeclinedApplicants() throws Exception {
         var propertyId = UUID.randomUUID();
-        this.givenApplicantIsCreated("Chiara", propertyId);
-        this.givenApplicantIsCreated("Thorsten", propertyId);
-        var andi = this.givenApplicantIsCreated("Andi", propertyId);
-        var lisa = this.givenApplicantIsCreated("Lisa", propertyId);
+        this.givenApplicantIsCreated("Chiara", propertyId, SAMPLE_EMAIL_ADDRESS);
+        this.givenApplicantIsCreated("Thorsten", propertyId, SAMPLE_EMAIL_ADDRESS);
+        var andi = this.givenApplicantIsCreated("Andi", propertyId, SAMPLE_EMAIL_ADDRESS);
+        var lisa = this.givenApplicantIsCreated("Lisa", propertyId, SAMPLE_EMAIL_ADDRESS);
 
         givenApplicantHasStatus(lisa, Status.INVITED);
         givenApplicantHasStatus(andi, Status.DECLINED);
@@ -82,8 +83,23 @@ public class ApplicantRetrievalIT {
                 .andExpect(jsonPath("$[0].firstName").value("Andi"));
     }
 
-    private String givenApplicantIsCreated(String name, UUID propertyId) throws Exception {
-        var body = VALID_REQUEST_BODY.replace("John", name);
+    @Test
+    void shouldBeAbleToRetrieveApplicantsBasedOnPartsOfTheirEmail() throws Exception {
+        var propertyId = UUID.randomUUID();
+        this.givenApplicantIsCreated("Christina", propertyId, "christina@gmail.com");
+        this.givenApplicantIsCreated("Thorsten", propertyId, SAMPLE_EMAIL_ADDRESS);
+        this.givenApplicantIsCreated("Andi", propertyId, SAMPLE_EMAIL_ADDRESS);
+        this.givenApplicantIsCreated("Chris", propertyId, "chris@gmail.com");
+
+        mockMvc.perform(get(getApplicantsEndpoint(propertyId)).queryParam("email", "chris"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].firstName").value("Christina"))
+                .andExpect(jsonPath("$[1].firstName").value("Chris"));
+    }
+
+    private String givenApplicantIsCreated(String name, UUID propertyId, String email) throws Exception {
+        var body = VALID_REQUEST_BODY.replace("John", name).replace("john.doe@example.com", email);
         var response = mockMvc.perform(post(getApplicantsEndpoint(propertyId))
                         .contentType("application/json")
                         .content(body))
