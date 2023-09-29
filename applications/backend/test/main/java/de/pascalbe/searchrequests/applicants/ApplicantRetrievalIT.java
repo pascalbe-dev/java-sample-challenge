@@ -32,10 +32,10 @@ public class ApplicantRetrievalIT {
     @Test
     void shouldBeAbleToRetrieveAllApplicantsForOneProperty() throws Exception {
         var propertyId = UUID.randomUUID();
-        this.saveApplicant("Rick", propertyId);
-        this.saveApplicant("Morty", propertyId);
-        this.saveApplicant("Summer", propertyId);
-        this.saveApplicant("Greg", UUID.randomUUID());
+        this.givenApplicantIsCreated("Rick", propertyId);
+        this.givenApplicantIsCreated("Morty", propertyId);
+        this.givenApplicantIsCreated("Summer", propertyId);
+        this.givenApplicantIsCreated("Greg", UUID.randomUUID());
 
 
         mockMvc.perform(get(getApplicantsEndpoint(propertyId)))
@@ -49,14 +49,14 @@ public class ApplicantRetrievalIT {
     @Test
     void shouldBeAbleToRetrieveOnlyInvitedApplicants() throws Exception {
         var propertyId = UUID.randomUUID();
-        this.saveApplicant("Chiara", propertyId);
-        var thorsten = this.saveApplicant("Thorsten", propertyId);
-        var andi = this.saveApplicant("Andi", propertyId);
-        var lisa = this.saveApplicant("Lisa", propertyId);
+        this.givenApplicantIsCreated("Chiara", propertyId);
+        var thorsten = this.givenApplicantIsCreated("Thorsten", propertyId);
+        var andi = this.givenApplicantIsCreated("Andi", propertyId);
+        var lisa = this.givenApplicantIsCreated("Lisa", propertyId);
 
-        changeApplicantStatus(thorsten, Status.INVITED);
-        changeApplicantStatus(lisa, Status.INVITED);
-        changeApplicantStatus(andi, Status.DECLINED);
+        givenApplicantHasStatus(thorsten, Status.INVITED);
+        givenApplicantHasStatus(lisa, Status.INVITED);
+        givenApplicantHasStatus(andi, Status.DECLINED);
 
         mockMvc.perform(get(getApplicantsEndpoint(propertyId)).queryParam("status", "INVITED"))
                 .andExpect(status().isOk())
@@ -65,7 +65,7 @@ public class ApplicantRetrievalIT {
                 .andExpect(jsonPath("$[1].firstName").value("Lisa"));
     }
 
-    private String saveApplicant(String name, UUID propertyId) throws Exception {
+    private String givenApplicantIsCreated(String name, UUID propertyId) throws Exception {
         var body = VALID_REQUEST_BODY.replace("John", name);
         var response = mockMvc.perform(post(getApplicantsEndpoint(propertyId))
                         .contentType("application/json")
@@ -77,7 +77,7 @@ public class ApplicantRetrievalIT {
         return (String) applicantId;
     }
 
-    private void changeApplicantStatus(String applicantId, Status status) {
+    private void givenApplicantHasStatus(String applicantId, Status status) {
         var applicant = repository.findById(applicantId).orElseThrow();
         applicant.setStatus(status);
         repository.save(applicant);
