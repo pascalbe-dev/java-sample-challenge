@@ -33,10 +33,13 @@ public class ApplicantRetrievalIT {
     @Test
     void shouldBeAbleToRetrieveAllApplicantsForOneProperty() throws Exception {
         var propertyId = UUID.randomUUID();
-        this.givenApplicantIsCreated("Rick", propertyId, SAMPLE_EMAIL_ADDRESS);
-        this.givenApplicantIsCreated("Morty", propertyId, SAMPLE_EMAIL_ADDRESS);
+        var rick = this.givenApplicantIsCreated("Rick", propertyId, SAMPLE_EMAIL_ADDRESS);
+        var morty = this.givenApplicantIsCreated("Morty", propertyId, SAMPLE_EMAIL_ADDRESS);
         this.givenApplicantIsCreated("Summer", propertyId, SAMPLE_EMAIL_ADDRESS);
         this.givenApplicantIsCreated("Greg", UUID.randomUUID(), SAMPLE_EMAIL_ADDRESS);
+
+        givenApplicantHasStatus(rick, Status.INVITED);
+        givenApplicantHasStatus(morty, Status.DECLINED);
 
 
         mockMvc.perform(get(getApplicantsEndpoint(propertyId)))
@@ -86,10 +89,12 @@ public class ApplicantRetrievalIT {
     @Test
     void shouldBeAbleToRetrieveApplicantsBasedOnPartsOfTheirEmail() throws Exception {
         var propertyId = UUID.randomUUID();
-        this.givenApplicantIsCreated("Christina", propertyId, "christina@gmail.com");
+        var christina = this.givenApplicantIsCreated("Christina", propertyId, "christina@gmail.com");
         this.givenApplicantIsCreated("Thorsten", propertyId, SAMPLE_EMAIL_ADDRESS);
         this.givenApplicantIsCreated("Andi", propertyId, SAMPLE_EMAIL_ADDRESS);
         this.givenApplicantIsCreated("Chris", propertyId, "chris@gmail.com");
+
+        givenApplicantHasStatus(christina, Status.INVITED);
 
         mockMvc.perform(get(getApplicantsEndpoint(propertyId)).queryParam("email", "chris"))
                 .andExpect(status().isOk())
