@@ -3,6 +3,7 @@ package de.pascalbe.searchrequests.applicants.api;
 import de.pascalbe.searchrequests.applicants.domain.Applicant;
 import de.pascalbe.searchrequests.applicants.domain.ApplicantRepository;
 import de.pascalbe.searchrequests.applicants.domain.CreationSource;
+import de.pascalbe.searchrequests.applicants.domain.Status;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,7 @@ public class ApplicantsController {
         applicant.setSalutation(manualApplicant.getSalutation());
         applicant.setCreationSource(CreationSource.MANUAL);
         applicant.setPropertyId(propertyId);
+        applicant.setStatus(Status.CREATED);
         applicantRepository.save(applicant);
 
         var response = new StoreApplicantResponse();

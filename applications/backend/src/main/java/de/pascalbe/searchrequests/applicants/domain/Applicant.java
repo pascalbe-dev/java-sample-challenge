@@ -31,4 +31,6 @@ public class Applicant {
 
     @CreationTimestamp
     private Instant creationTimestamp;
+
+    private Status status;
 }

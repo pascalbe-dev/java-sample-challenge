@@ -79,4 +79,20 @@ public class ManualApplicantCreationIT {
                 .andExpect(jsonPath("$.creationTimestamp").isNotEmpty())
                 .andExpect(jsonPath("$.creationTimestamp", matchesPattern(timestampRegex)));
     }
+
+    @Test
+    void shouldMarkNewlyCreatedManualApplicantsWithStatusCreated() throws Exception {
+        var requestResult = mockMvc.perform(post(CREATE_APPLICANT_ENDPOINT)
+                        .contentType("application/json")
+                        .content(VALID_REQUEST_BODY))
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        var applicantId = JsonPath.read(requestResult.getResponse().getContentAsString(), "$.id");
+        assertThat((String) applicantId).isNotBlank();
+
+        mockMvc.perform(get("/applicants/" + applicantId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("CREATED"));
+    }
 }
