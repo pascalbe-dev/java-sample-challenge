@@ -1,5 +1,8 @@
 package de.pascalbe.searchrequests.applicants;
 
+import com.jayway.jsonpath.JsonPath;
+import de.pascalbe.searchrequests.applicants.domain.ApplicantRepository;
+import de.pascalbe.searchrequests.applicants.domain.Status;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -23,6 +26,9 @@ public class ApplicantRetrievalIT {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private ApplicantRepository repository;
+
     @Test
     void shouldBeAbleToRetrieveAllApplicantsForOneProperty() throws Exception {
         var propertyId = UUID.randomUUID();
@@ -40,12 +46,41 @@ public class ApplicantRetrievalIT {
                 .andExpect(jsonPath("$[2].firstName").value("Summer"));
     }
 
-    private void saveApplicant(String name, UUID propertyId) throws Exception {
+    @Test
+    void shouldBeAbleToRetrieveOnlyInvitedApplicants() throws Exception {
+        var propertyId = UUID.randomUUID();
+        this.saveApplicant("Chiara", propertyId);
+        var thorsten = this.saveApplicant("Thorsten", propertyId);
+        var andi = this.saveApplicant("Andi", propertyId);
+        var lisa = this.saveApplicant("Lisa", propertyId);
+
+        changeApplicantStatus(thorsten, Status.INVITED);
+        changeApplicantStatus(lisa, Status.INVITED);
+        changeApplicantStatus(andi, Status.DECLINED);
+
+        mockMvc.perform(get(getApplicantsEndpoint(propertyId)).queryParam("status", "INVITED"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].firstName").value("Thorsten"))
+                .andExpect(jsonPath("$[1].firstName").value("Lisa"));
+    }
+
+    private String saveApplicant(String name, UUID propertyId) throws Exception {
         var body = VALID_REQUEST_BODY.replace("John", name);
-        mockMvc.perform(post(getApplicantsEndpoint(propertyId))
+        var response = mockMvc.perform(post(getApplicantsEndpoint(propertyId))
                         .contentType("application/json")
                         .content(body))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andReturn();
+
+        var applicantId = JsonPath.read(response.getResponse().getContentAsString(), "$.id");
+        return (String) applicantId;
+    }
+
+    private void changeApplicantStatus(String applicantId, Status status) {
+        var applicant = repository.findById(applicantId).orElseThrow();
+        applicant.setStatus(status);
+        repository.save(applicant);
     }
 
     private String getApplicantsEndpoint(UUID propertyId) {
