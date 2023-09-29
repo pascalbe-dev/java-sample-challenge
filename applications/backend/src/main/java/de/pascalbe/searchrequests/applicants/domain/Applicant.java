@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import java.time.Instant;
 import java.util.UUID;
 
+//  TO NOTE: we should put some constraints on the DB so that DB calls fail, when required columns are not there.
+//      Leaving this out to not invest too much time now.
 @Entity
 @Data
 public class Applicant {
