@@ -26,10 +26,10 @@ public class AutomatedApplicantCreationIT {
             "\"firstName\": \"John\", " +
             "\"lastName\": \"Doe\", " +
             "\"applicantComment\": \"Applicant comment\", " +
-            "\"salutation\": \"MRS\"" +
-            "\"wbsPresent\": true" +
-            "\"pets\": false" +
-            "\"numberOfPersons\": 3" +
+            "\"salutation\": \"MRS\", " +
+            "\"wbsPresent\": true, " +
+            "\"pets\": false, " +
+            "\"numberOfPersons\": 3, " +
             "\"earliestMoveInDate\": \"2024-01-01\"" +
             "}";
 

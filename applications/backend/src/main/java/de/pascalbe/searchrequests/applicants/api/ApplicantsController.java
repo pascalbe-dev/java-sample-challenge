@@ -23,7 +23,8 @@ public class ApplicantsController {
     private final ApplicantRepository applicantRepository;
 
     @PostMapping("/properties/{propertyId}/applicants")
-    public ResponseEntity<?> storeManualApplicant(@PathVariable UUID propertyId, @Valid @RequestBody ManualApplicant manualApplicant) {
+    public ResponseEntity<?> storeManualApplicant(@PathVariable UUID propertyId,
+                                                  @Valid @RequestBody ManualApplicant manualApplicant) {
         //  TO NOTE: we could put this logic in the application layer, but since there is no real application logic,
         //      we'll leave it here for simplicity reasons.
         var applicant = new Applicant();
@@ -36,6 +37,28 @@ public class ApplicantsController {
         applicant.setComment(manualApplicant.getComment());
         applicant.setSalutation(manualApplicant.getSalutation());
         applicant.setCreationSource(CreationSource.MANUAL);
+        applicant.setPropertyId(propertyId);
+        applicant.setStatus(Status.CREATED);
+        applicantRepository.save(applicant);
+
+        var response = new StoreApplicantResponse();
+        response.setId(applicant.getId());
+        return ResponseEntity.created(URI.create("/applicants/" + response.getId())).body(response);
+    }
+
+    //  TO NOTE: this endpoint should have unit tests for the validations.
+    //      Leaving it out to keep it simple.
+    @PostMapping("/properties/{propertyId}/external-applicants")
+    public ResponseEntity<?> storeAutomatedApplicant(@PathVariable UUID propertyId,
+                                                     @Valid @RequestBody AutomatedApplicant automatedApplicant) {
+        var applicant = new Applicant();
+        applicant.setId(String.valueOf(UUID.randomUUID()));
+        applicant.setEmail(automatedApplicant.getEmail());
+        applicant.setFirstName(automatedApplicant.getFirstName());
+        applicant.setLastName(automatedApplicant.getLastName());
+        applicant.setComment(automatedApplicant.getApplicantComment());
+        applicant.setSalutation(automatedApplicant.getSalutation());
+        applicant.setCreationSource(CreationSource.PORTAL);
         applicant.setPropertyId(propertyId);
         applicant.setStatus(Status.CREATED);
         applicantRepository.save(applicant);
