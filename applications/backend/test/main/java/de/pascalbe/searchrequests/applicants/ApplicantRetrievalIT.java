@@ -18,7 +18,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 public class ApplicantRetrievalIT {
-    private static final UUID SAMPLE_PROPERTY_ID = UUID.fromString("6c54590a-04d4-46e6-b383-d1bc8be8e530");
     private static final String VALID_REQUEST_BODY = "{\"email\": \"john.doe@example.com\", \"firstName\": \"John\", \"lastName\": \"Doe\", \"comment\": \"I am a comment\", \"salutation\": \"MRS\"}";
 
     @Autowired
@@ -26,13 +25,14 @@ public class ApplicantRetrievalIT {
 
     @Test
     void shouldBeAbleToRetrieveAllApplicantsForOneProperty() throws Exception {
-        this.saveApplicant("Rick", SAMPLE_PROPERTY_ID);
-        this.saveApplicant("Morty", SAMPLE_PROPERTY_ID);
-        this.saveApplicant("Summer", SAMPLE_PROPERTY_ID);
+        var propertyId = UUID.randomUUID();
+        this.saveApplicant("Rick", propertyId);
+        this.saveApplicant("Morty", propertyId);
+        this.saveApplicant("Summer", propertyId);
         this.saveApplicant("Greg", UUID.randomUUID());
 
 
-        mockMvc.perform(get(getApplicantsEndpoint(SAMPLE_PROPERTY_ID)))
+        mockMvc.perform(get(getApplicantsEndpoint(propertyId)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(3))
                 .andExpect(jsonPath("$[0].firstName").value("Rick"))
