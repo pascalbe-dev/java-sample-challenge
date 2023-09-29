@@ -82,10 +82,14 @@ public class ApplicantsController {
     @GetMapping("/properties/{propertyId}/applicants")
     public ResponseEntity<List<Applicant>> getApplicants(@PathVariable UUID propertyId,
                                                          @RequestParam Optional<Status> status,
-                                                         @RequestParam Optional<String> partOfEmail,
-                                                         @RequestParam Optional<Integer> numberOfPersons) {
+                                                         @RequestParam Optional<Integer> numberOfPersons,
+                                                         @RequestParam Optional<Boolean> wbsPresent,
+                                                         @RequestParam Optional<String> partOfEmail) {
         var applicants = applicantRepository.findAllByAttributes(propertyId,
-                status.orElse(null), numberOfPersons.orElse(null) , partOfEmail.orElse(null));
+                status.orElse(null),
+                numberOfPersons.orElse(null),
+                wbsPresent.orElse(null),
+                partOfEmail.orElse(null));
 
         return ResponseEntity.ok(applicants);
     }
