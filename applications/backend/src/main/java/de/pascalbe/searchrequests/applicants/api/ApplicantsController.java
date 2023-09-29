@@ -34,7 +34,7 @@ public class ApplicantsController {
         applicant.setEmail(manualApplicant.getEmail());
         applicant.setFirstName(manualApplicant.getFirstName());
         applicant.setLastName(manualApplicant.getLastName());
-        applicant.setComment(manualApplicant.getComment());
+        applicant.setUserComment(manualApplicant.getUserComment());
         applicant.setSalutation(manualApplicant.getSalutation());
         applicant.setCreationSource(CreationSource.MANUAL);
         applicant.setPropertyId(propertyId);
@@ -56,7 +56,7 @@ public class ApplicantsController {
         applicant.setEmail(automatedApplicant.getEmail());
         applicant.setFirstName(automatedApplicant.getFirstName());
         applicant.setLastName(automatedApplicant.getLastName());
-        applicant.setComment(automatedApplicant.getApplicantComment());
+        applicant.setUserComment(automatedApplicant.getApplicantComment());
         applicant.setSalutation(automatedApplicant.getSalutation());
         applicant.setCreationSource(CreationSource.PORTAL);
         applicant.setPropertyId(propertyId);

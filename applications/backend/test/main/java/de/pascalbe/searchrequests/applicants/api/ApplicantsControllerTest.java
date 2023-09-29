@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ApplicantsControllerTest {
 
     private static final String CREATE_APPLICANT_ENDPOINT = "/properties/6c54590a-04d4-46e6-b383-d1bc8be8e530/applicants";
-    private static final String VALID_REQUEST_BODY = "{\"email\": \"john.doe@example.com\", \"firstName\": \"John\", \"lastName\": \"Doe\", \"comment\": \"This is a comment\", \"salutation\": \"MR\"}";
+    private static final String VALID_REQUEST_BODY = "{\"email\": \"john.doe@example.com\", \"firstName\": \"John\", \"lastName\": \"Doe\", \"userComment\": \"This is a comment\", \"salutation\": \"MR\"}";
 
     @Autowired
     private MockMvc mockMvc;
@@ -69,7 +69,7 @@ class ApplicantsControllerTest {
 
     @Test
     void shouldAllowToCreateApplicantWithoutSalutation() throws Exception {
-        var requestBody = "{\"email\": \"john.doe@example.com\", \"firstName\": \"John\", \"lastName\": \"Doe\", \"comment\": \"Sample comment\"}";
+        var requestBody = "{\"email\": \"john.doe@example.com\", \"firstName\": \"John\", \"lastName\": \"Doe\", \"userComment\": \"Sample comment\"}";
         this.mockMvc.perform(post(CREATE_APPLICANT_ENDPOINT).contentType(MediaType.APPLICATION_JSON).content(requestBody)).andExpect(status().isCreated());
     }
 

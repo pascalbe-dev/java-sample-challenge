@@ -25,7 +25,7 @@ public class Applicant {
 
     private String lastName;
 
-    private String comment;
+    private String userComment;
 
     private Salutation salutation;
 

@@ -20,7 +20,7 @@ public class ManualApplicant {
     @NotBlank
     private String lastName;
 
-    private String comment;
+    private String userComment;
 
     private Salutation salutation;
 

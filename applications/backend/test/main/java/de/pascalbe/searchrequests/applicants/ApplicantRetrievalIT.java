@@ -22,7 +22,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 public class ApplicantRetrievalIT {
     private static final String SAMPLE_EMAIL_ADDRESS = "john.doe@example.com";
-    private static final String VALID_REQUEST_BODY = "{\"email\": \"john.doe@example.com\", \"firstName\": \"John\", \"lastName\": \"Doe\", \"comment\": \"I am a comment\", \"salutation\": \"MRS\"}";
+    private static final String VALID_REQUEST_BODY = "{" +
+            "\"email\": \"john.doe@example.com\", " +
+            "\"firstName\": \"John\", " +
+            "\"lastName\": \"Doe\", " +
+            "\"userComment\": \"I am a comment\", " +
+            "\"salutation\": \"MRS\"" +
+            "}";
 
     @Autowired
     private MockMvc mockMvc;
