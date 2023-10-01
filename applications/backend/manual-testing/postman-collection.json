@@ -1,0 +1,110 @@
+{
+	"info": {
+		"_postman_id": "cebb3aa2-c26d-4d63-b9da-92758ede5441",
+		"name": "Wohnungshelden Challenge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11731839",
+		"_collection_link": "https://smart-cockpit.postman.co/workspace/Team-Workspace~05948702-2993-487d-8cb8-bb71bedd8fd1/collection/11731839-cebb3aa2-c26d-4d63-b9da-92758ede5441?action=share&source=collection_link&creator=11731839"
+	},
+	"item": [
+		{
+			"name": "Create manual applicant",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Smith\",\n  \"email\": \"john.smith@gmail.com\"\n}\ns",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/properties/909106b5-2ab0-4dfa-8465-e472550d594b/applicants",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"properties",
+						"909106b5-2ab0-4dfa-8465-e472550d594b",
+						"applicants"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create automated applicant",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"alex.racker@example.com\",\n  \"firstName\": \"Alex\",\n  \"lastName\": \"Racker\",\n  \"salutation\": \"MR\",\n  \"wbsPresent\": true,\n  \"pets\": true,\n  \"numberOfPersons\": 3,\n  \"earliestMoveInDate\": \"2024-02-01\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/properties/909106b5-2ab0-4dfa-8465-e472550d594b/external-applicants",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"properties",
+						"909106b5-2ab0-4dfa-8465-e472550d594b",
+						"external-applicants"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get applicants",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/properties/909106b5-2ab0-4dfa-8465-e472550d594b/applicants?status=CREATED&partOfEmail=doe&wbsPresent=true&numberOfPersons=3",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"properties",
+						"909106b5-2ab0-4dfa-8465-e472550d594b",
+						"applicants"
+					],
+					"query": [
+						{
+							"key": "status",
+							"value": "CREATED"
+						},
+						{
+							"key": "partOfEmail",
+							"value": "doe"
+						},
+						{
+							"key": "wbsPresent",
+							"value": "true"
+						},
+						{
+							"key": "numberOfPersons",
+							"value": "3"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
