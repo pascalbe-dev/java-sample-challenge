@@ -1,0 +1,9 @@
+{
+  "email": "diana@example.com",
+  "lastName": "Diana",
+  "salutation": "MRS",
+  "wbsPresent": false,
+  "pets": true,
+  "numberOfPersons": 2,
+  "earliestMoveInDate": "2024-03-01"
+}
