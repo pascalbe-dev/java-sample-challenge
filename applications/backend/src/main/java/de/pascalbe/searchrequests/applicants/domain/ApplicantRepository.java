@@ -13,7 +13,8 @@ public interface ApplicantRepository extends JpaRepository<Applicant, String> {
             "AND (:status IS NULL OR a.status = :status) " +
             "AND (:numberOfPersons IS NULL OR a.numberOfPersons = :numberOfPersons) " +
             "AND (:wbsPresent IS NULL OR a.wbsPresent = :wbsPresent) " +
-            "AND (:email IS NULL OR a.email LIKE %:email%)")
+            "AND (:email IS NULL OR a.email LIKE %:email%) " +
+            "ORDER BY a.creationTimestamp DESC")
     List<Applicant> findAllByAttributes(
             @Param("propertyId") UUID propertyId,
             @Param("status") Status status,

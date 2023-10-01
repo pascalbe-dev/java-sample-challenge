@@ -39,9 +39,9 @@ public class ApplicantRetrievalIT {
     @Test
     void shouldBeAbleToRetrieveAllApplicantsForOneProperty() throws Exception {
         var propertyId = UUID.randomUUID();
-        var rick = this.givenApplicantIsCreated("Rick", propertyId, SAMPLE_EMAIL_ADDRESS);
-        var morty = this.givenApplicantIsCreated("Morty", propertyId, SAMPLE_EMAIL_ADDRESS);
         this.givenApplicantIsCreated("Summer", propertyId, SAMPLE_EMAIL_ADDRESS);
+        var morty = this.givenApplicantIsCreated("Morty", propertyId, SAMPLE_EMAIL_ADDRESS);
+        var rick = this.givenApplicantIsCreated("Rick", propertyId, SAMPLE_EMAIL_ADDRESS);
         this.givenApplicantIsCreated("Greg", UUID.randomUUID(), SAMPLE_EMAIL_ADDRESS);
 
         givenApplicantHasStatus(rick, Status.INVITED);
@@ -60,9 +60,9 @@ public class ApplicantRetrievalIT {
     void shouldBeAbleToRetrieveOnlyInvitedApplicants() throws Exception {
         var propertyId = UUID.randomUUID();
         this.givenApplicantIsCreated("Chiara", propertyId, SAMPLE_EMAIL_ADDRESS);
-        var thorsten = this.givenApplicantIsCreated("Thorsten", propertyId, SAMPLE_EMAIL_ADDRESS);
-        var andi = this.givenApplicantIsCreated("Andi", propertyId, SAMPLE_EMAIL_ADDRESS);
         var lisa = this.givenApplicantIsCreated("Lisa", propertyId, SAMPLE_EMAIL_ADDRESS);
+        var andi = this.givenApplicantIsCreated("Andi", propertyId, SAMPLE_EMAIL_ADDRESS);
+        var thorsten = this.givenApplicantIsCreated("Thorsten", propertyId, SAMPLE_EMAIL_ADDRESS);
 
         givenApplicantHasStatus(thorsten, Status.INVITED);
         givenApplicantHasStatus(lisa, Status.INVITED);
@@ -95,10 +95,10 @@ public class ApplicantRetrievalIT {
     @Test
     void shouldBeAbleToRetrieveApplicantsBasedOnPartsOfTheirEmail() throws Exception {
         var propertyId = UUID.randomUUID();
+        this.givenApplicantIsCreated("Chris", propertyId, "chris@gmail.com");
         var christina = this.givenApplicantIsCreated("Christina", propertyId, "christina@gmail.com");
         this.givenApplicantIsCreated("Thorsten", propertyId, SAMPLE_EMAIL_ADDRESS);
         this.givenApplicantIsCreated("Andi", propertyId, SAMPLE_EMAIL_ADDRESS);
-        this.givenApplicantIsCreated("Chris", propertyId, "chris@gmail.com");
 
         givenApplicantHasStatus(christina, Status.INVITED);
 
@@ -112,9 +112,9 @@ public class ApplicantRetrievalIT {
     @Test
     void shouldBeAbleToRetrieveOnlyApplicantsWithASpecificNumberOfPersons() throws Exception {
         var propertyId = UUID.randomUUID();
+        var teja = this.givenApplicantIsCreated("Teja", propertyId, SAMPLE_EMAIL_ADDRESS);
         var christina = this.givenApplicantIsCreated("Christina", propertyId, SAMPLE_EMAIL_ADDRESS);
         var thorsten = this.givenApplicantIsCreated("Thorsten", propertyId, SAMPLE_EMAIL_ADDRESS);
-        var teja = this.givenApplicantIsCreated("Teja", propertyId, SAMPLE_EMAIL_ADDRESS);
 
         givenApplicantSearchesForThisAmountOfPersons(christina, 2);
         givenApplicantSearchesForThisAmountOfPersons(thorsten, 3);
