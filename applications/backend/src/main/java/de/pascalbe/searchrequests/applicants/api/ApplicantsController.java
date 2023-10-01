@@ -50,21 +50,21 @@ public class ApplicantsController {
     //      Leaving it out to keep it simple.
     @PostMapping("/properties/{propertyId}/external-applicants")
     public ResponseEntity<?> storeAutomatedApplicant(@PathVariable UUID propertyId,
-                                                     @Valid @RequestBody AutomatedApplicant automatedApplicant) {
+                                                     @Valid @RequestBody ExternalApplicant externalApplicant) {
         var applicant = new Applicant();
         applicant.setId(String.valueOf(UUID.randomUUID()));
-        applicant.setEmail(automatedApplicant.getEmail());
-        applicant.setFirstName(automatedApplicant.getFirstName());
-        applicant.setLastName(automatedApplicant.getLastName());
-        applicant.setApplicantComment(automatedApplicant.getApplicantComment());
-        applicant.setSalutation(automatedApplicant.getSalutation());
+        applicant.setEmail(externalApplicant.getEmail());
+        applicant.setFirstName(externalApplicant.getFirstName());
+        applicant.setLastName(externalApplicant.getLastName());
+        applicant.setApplicantComment(externalApplicant.getApplicantComment());
+        applicant.setSalutation(externalApplicant.getSalutation());
         applicant.setCreationSource(CreationSource.PORTAL);
         applicant.setPropertyId(propertyId);
         applicant.setStatus(Status.CREATED);
-        applicant.setWbsPresent(automatedApplicant.isWbsPresent());
-        applicant.setPets(automatedApplicant.isPets());
-        applicant.setNumberOfPersons(automatedApplicant.getNumberOfPersons());
-        applicant.setEarliestMoveInDate(automatedApplicant.getEarliestMoveInDate());
+        applicant.setWbsPresent(externalApplicant.isWbsPresent());
+        applicant.setPets(externalApplicant.isPets());
+        applicant.setNumberOfPersons(externalApplicant.getNumberOfPersons());
+        applicant.setEarliestMoveInDate(externalApplicant.getEarliestMoveInDate());
         applicantRepository.save(applicant);
 
         var response = new StoreApplicantResponse();

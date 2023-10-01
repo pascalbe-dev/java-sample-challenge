@@ -38,7 +38,7 @@
 			"response": []
 		},
 		{
-			"name": "Create automated applicant",
+			"name": "Create external applicant",
 			"request": {
 				"method": "POST",
 				"header": [],

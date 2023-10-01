@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-public class AutomatedApplicantCreationIT {
+public class ExternalApplicantCreationIT {
     private static final String CREATE_APPLICANT_ENDPOINT = "/properties/6c54590a-04d4-46e6-b383-d1bc8be8e530/external-applicants";
     private static final String VALID_REQUEST_BODY = "{" +
             "\"email\": \"john.doe@example.com\", " +
@@ -37,7 +37,7 @@ public class AutomatedApplicantCreationIT {
     private MockMvc mockMvc;
 
     @Test
-    void shouldBeAbleToStoreAndFetchDataAboutAutomatedApplicants() throws Exception {
+    void shouldBeAbleToStoreAndFetchDataAboutExternalApplicants() throws Exception {
         var requestResult = mockMvc.perform(post(CREATE_APPLICANT_ENDPOINT)
                         .contentType("application/json")
                         .content(VALID_REQUEST_BODY))
@@ -95,7 +95,7 @@ public class AutomatedApplicantCreationIT {
     }
 
     @Test
-    void shouldMarkNewlyCreatedAutomatedApplicantsWithStatusCreated() throws Exception {
+    void shouldMarkNewlyCreatedApplicantsWithStatusCreated() throws Exception {
         var requestResult = mockMvc.perform(post(CREATE_APPLICANT_ENDPOINT)
                         .contentType("application/json")
                         .content(VALID_REQUEST_BODY))
