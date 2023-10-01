@@ -22,3 +22,4 @@ mvn spring-boot:run
 - run the different requests
   - you can enable/change filters for the GET endpoint
   - you can change the request body (feel free to use the sample JSON files in [manual-testing](manual-testing/request-payload))
+- adjust user information directly in the DB if you need to (via your favorite DB client)
