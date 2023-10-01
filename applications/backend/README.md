@@ -23,3 +23,10 @@ mvn spring-boot:run
   - you can enable/change filters for the GET endpoint
   - you can change the request body (feel free to use the sample JSON files in [manual-testing](manual-testing/request-payload))
 - adjust user information directly in the DB if you need to (via your favorite DB client)
+
+## Potential next steps
+
+- add new features about inviting, declining participants, ...
+- create the database schema via some migration tool (e.g. Flyway)
+  - so that it can evolve easier over time
+- update dependencies to be able to use newer features and to get rid of security vulnerabilities
