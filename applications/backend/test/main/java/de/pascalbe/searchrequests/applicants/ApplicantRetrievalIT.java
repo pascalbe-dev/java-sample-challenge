@@ -143,6 +143,44 @@ public class ApplicantRetrievalIT {
                 .andExpect(jsonPath("$[0].firstName").value("Teja"));
     }
 
+    @Test
+    void shouldBeAbleToFilterByAllParameters() throws Exception {
+        var propertyId = UUID.randomUUID();
+        var john = this.givenApplicantIsCreated("John", propertyId, SAMPLE_EMAIL_ADDRESS);
+        var chris = this.givenApplicantIsCreated("Chris", propertyId, "chris@chris-is-great.de");
+        var christian = this.givenApplicantIsCreated("Christian", propertyId, "christian@rocks.com");
+        var chiara = this.givenApplicantIsCreated("Chiara", propertyId, "chiara@muybien.es");
+        var charly = this.givenApplicantIsCreated("Charly", propertyId, "unser.charly@ard.de");
+
+        givenApplicantHasStatus(john, Status.INVITED);
+        givenApplicantHasStatus(chris, Status.INVITED);
+        givenApplicantHasStatus(christian, Status.DECLINED);
+        givenApplicantHasStatus(chiara, Status.INVITED);
+        givenApplicantHasStatus(charly, Status.INVITED);
+        givenApplicantHasAWbs(john, true);
+        givenApplicantHasAWbs(chris, true);
+        givenApplicantHasAWbs(christian, true);
+        givenApplicantHasAWbs(chiara, true);
+        givenApplicantHasAWbs(charly, false);
+        givenApplicantSearchesForThisAmountOfPersons(john, 2);
+        givenApplicantSearchesForThisAmountOfPersons(chris, 1);
+        givenApplicantSearchesForThisAmountOfPersons(christian, 4);
+        givenApplicantSearchesForThisAmountOfPersons(chiara, 3);
+        givenApplicantSearchesForThisAmountOfPersons(charly, 4);
+
+        mockMvc.perform(get(getApplicantsEndpoint(propertyId))
+                        .queryParam("status", "INVITED")
+                        .queryParam("partOfEmail", "ch")
+                        .queryParam("numberOfPersons", "3")
+                        .queryParam("wbsPresent", "true"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].firstName").value("Chiara"));
+
+    }
+
+    //  TO NOTE: we could use something like the builder pattern to prepare test data in a simpler way -
+    //      that would make tests easier to write and keep them easy to understand.
     private String givenApplicantIsCreated(String name, UUID propertyId, String email) throws Exception {
         var body = VALID_REQUEST_BODY.replace("John", name).replace("john.doe@example.com", email);
         var response = mockMvc.perform(post(getApplicantsEndpoint(propertyId))
