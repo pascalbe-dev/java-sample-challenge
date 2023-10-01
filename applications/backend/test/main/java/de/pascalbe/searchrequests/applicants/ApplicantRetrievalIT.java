@@ -179,6 +179,28 @@ public class ApplicantRetrievalIT {
 
     }
 
+    @Test
+    void shouldRetrieveNewestApplicantsFirstInApplicantRetrieval() throws Exception {
+        var propertyId = UUID.randomUUID();
+        var john = this.givenApplicantIsCreated("John", propertyId, SAMPLE_EMAIL_ADDRESS);
+        var chris = this.givenApplicantIsCreated("Chris", propertyId, SAMPLE_EMAIL_ADDRESS);
+        var margit = this.givenApplicantIsCreated("Margit", propertyId, SAMPLE_EMAIL_ADDRESS);
+        var irina = this.givenApplicantIsCreated("Irina", propertyId, SAMPLE_EMAIL_ADDRESS);
+
+        givenApplicantHasStatus(john, Status.INVITED);
+        givenApplicantHasStatus(chris, Status.DECLINED);
+        givenApplicantHasStatus(margit, Status.INVITED);
+        givenApplicantHasStatus(irina, Status.INVITED);
+
+        mockMvc.perform(get(getApplicantsEndpoint(propertyId))
+                        .queryParam("status", "INVITED"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(3))
+                .andExpect(jsonPath("$[0].id").value(irina))
+                .andExpect(jsonPath("$[1].id").value(margit))
+                .andExpect(jsonPath("$[2].id").value(john));
+    }
+
     //  TO NOTE: we could use something like the builder pattern to prepare test data in a simpler way -
     //      that would make tests easier to write and keep them easy to understand.
     private String givenApplicantIsCreated(String name, UUID propertyId, String email) throws Exception {
