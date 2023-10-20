@@ -49,8 +49,8 @@ public class ApplicantsController {
     //  TO NOTE: this endpoint should have unit tests for the validations.
     //      Leaving it out to keep it simple.
     @PostMapping("/properties/{propertyId}/external-applicants")
-    public ResponseEntity<?> storeAutomatedApplicant(@PathVariable UUID propertyId,
-                                                     @Valid @RequestBody ExternalApplicant externalApplicant) {
+    public ResponseEntity<?> storeExternalApplicant(@PathVariable UUID propertyId,
+                                                    @Valid @RequestBody ExternalApplicant externalApplicant) {
         var applicant = new Applicant();
         applicant.setId(String.valueOf(UUID.randomUUID()));
         applicant.setEmail(externalApplicant.getEmail());
